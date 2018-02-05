@@ -1,9 +1,5 @@
 use commoncause
 
---LAST UPDATED BY LUCINDA(APR 2017) WITH GIFTS THROUGH 
-
-
--- select * from gifthist_new
       
 update gifthist_new 
 set gift=[PAYMENT AMOUNT (TRANSACTIONS)],
@@ -55,22 +51,7 @@ update gifthist set fy_cash=year(gift_date) where month(gift_date) between 1 and
 update gifthist set fy_cash=year(dateadd(year,1,gift_date)) where month(gift_date) between 7 and 12 and gift_date >= '2017-07-01' ---fy_cash is null --and gift_date>= '2014-07-01'
 
 
-
---SELECT SUBSTRING(SOURCE,1,2),COUNT(*) FROM GIFTHIST WHERE FY_CASH = 2014
---GROUP BY SUBSTRING(SOURCE,1,2)
---ORDER BY SUBSTRING(SOURCE,1,2)
-
---SELECT SUBSTRING(SOURCE,1,2),COUNT(*) FROM GIFTHIST WHERE FY_CASH = 2016
---GROUP BY SUBSTRING(SOURCE,1,2)
---ORDER BY SUBSTRING(SOURCE,1,2)
-
 --STATES
-
-
---NEED TO AMMEND TO INCLUDE NEW FY15+ SOURCES!!!!!!!!??
---IT APPEARS THAT THE BASIC ROOT STRUCTURE DID NOT CHANGE?
-
---alter table gifthist add states int, track int
 
 update gifthist set states=1 where ([source] like 'AS%' or [source] like 'YS%') 
 and states is null and gift_date>= '2017-07-01'
@@ -79,25 +60,12 @@ update gifthist set states=0 where states is null and gift_date>= '2017-07-01'
 select states, count(*) from gifthist
 group by states
 
---select fy_cash,states, count(*) from gifthist
---group by fy_cash,states
---order by fy_cash,states
 
 --TRACK
 select states, count(*) from gifthist where fy_cash = 2017 group by states
 select track, count(*) from gifthist where fy_cash = 2017 group by track
- --TRACKING OF GIFTS PRIMARILY BEGINS IN FY05
- --THIS IS THE KNOWLEDGE THAT NANCY AND DENNIS HAD, FY05+
 
---SELECT FY_CASH,track,COUNT(*) FROM GIFTHIST where gift> 0 
---and states=0  
---  group by fy_cash,track order by fy_cash,track
-    
---SELECT FY_CASH,(COUNT(*)-SUM(track)+.00000001)/COUNT(*) AS PERCENTAGE_UNTRACKED ,
---COUNT(*)-SUM(track) AS UNTRACKED,COUNT(*)AS TOTAL,SUM(track) AS TRACKED FROM GIFTHIST where gift> 0 and states=0  
---  group by fy_cash order by fy_cash
-
---update gifthist set track=0
+update gifthist set track=0 where track is null
 
 update gifthist set track=1 where ([source] like 'A%' or
 [source] like 'Y%') --and gift<1000  --A IS ANNUAL RENEWAL C4, Y IS 501(C)3 EDUCATION FUND
@@ -115,46 +83,12 @@ update gifthist set track=0 where (source like 'AD%' or source like 'YD%') and g
 update gifthist set track=0 where states=1 and gift>10000 and gift_date>= '2017-07-01'--EXCLUDE STATE GIFTS ABOVE $10,000
 
 
---select transaction_type,gift_kind,soft_credit_type,count(*) from gifthist where track = 1 and gift > 0
---group by transaction_type,gift_kind,soft_credit_type
---order by transaction_type,gift_kind,soft_credit_type
-
---E F AND P CODES ARE NOT MENTIONED AND THUS EXCLUDED BY DEFAULT
---THEY ARE EVENT FOUNDATION AND PLANNED GIVING
-
---select fy_cash, count(*),sum(track) from gifthist where source in (select [source] from Source_Codes_No_Tracking)
---group by fy_cash
---order by fy_cash
-
---select source, count(*) as gifts,sum(gift) as rev from gifthist
---where source in (select [source] from Source_Codes_No_Tracking)
---group by source
---order by source
-
---select fy_cash, count(*) as gifts,sum(track) as tracked_gifts,(sum(track)+.01)/count(*) as percent_tracked from gifthist where gift >0
---group by fy_cash
---order by fy_cash
-
---select count(*),sum(gift) from gifthist where [source] in (select [source] from Source_Codes_No_Tracking)
---and gift>=1000 and track=1
-
---select [source],sum(gift) from gifthist where [source] in (select [source] from Source_Codes_No_Tracking)
---and gift>=1000 and track=1
---group by source
-
 
 --NEED TO AMMEND TO INCLUDE NEW FY15+ SOURCES!?
 --IT APPEARS THAT THE BASIC ROOT STRUCTURE DID NOT CHANGE?
 
 update gifthist set c4=1 where [source] like 'A%' and c4 is null and gift_date>= '2014-07-01' 
 update gifthist set c4=0 where c4 is null and gift_date>= '2014-07-01'
-
---select c4, count(*) from gifthist
---group by c4
-
---select fy_cash,c4, count(*) from gifthist
---group by fy_cash,c4
---order by fy_cash,c4
 
 --C3
 --alter table gifthist add c3 int
@@ -165,54 +99,7 @@ update gifthist set c4=0 where c4 is null and gift_date>= '2014-07-01'
 update gifthist set c3=1 where [source] like 'Y%' and c3 is null and gift_date>= '2014-07-01'
 update gifthist set c3=0 where c3 is null and gift_date>= '2014-07-01'
 
---select c3, count(*) from gifthist
---group by c3
 
---select fy_cash,c3, count(*) from gifthist
---group by fy_cash,c3
---order by fy_cash,c3
-
---select channel, count(*) from gifthist where track=1
---group by channel
---First Gift
-
---ALTER TABLE gifthist DROP COLUMN fg_date
---ALTER TABLE gifthist ADD fg_date DATETIME
-
---SELECT DISTINCT fg_date FROM GIFTHIST
-
---update gifthist set fg_date = null
---update gifthist set fg_amt = null
---update gifthist set join_year = null
---update gifthist set fg_date_overall = null
-
---select * from gifthist where source_bak is null 
-
---sp_dash is merlin gifts
---dash does not use that filter
---dash considers national and tracked
---select fy_cash,count(*)as gifts,
---sum(track) as tracked,cast(sum(track) as float)/count(*) as perc_tracked,
---sum(sp_dash) as merlin,cast(sum(sp_dash) as float)/count(*) as perc_merlin, sum(gift) 
---from gifthist
---where states = 0
---group by fy_cash
---order by fy_cash
-
---USE COMMONCAUSE
-
---UPDATE GIFTHIST SET fg_date = NULL, FG_AMT = NULL, JOIN_YEAR = NULL
-
---IN SEPT16 IT WAS DECIDED TO FINALIZE AND CONFIRM THE NEW JOIN DEFINITION:
---FIRST EVER GIFT (REGARDLESS OF PROGRAM) WILL BE CONSIDERED THE DONOR'S JOIN GIFT
-
---SELECT TOP 1000 * FROM GIFTHIST
-
---UPDATE GIFTHIST SET
---FG_AMT = NULL,
---FG_RANGE= NULL,
---FG_DATE= NULL,
---JOIN_YEAR= NULL
 
 --IN SEPT16 IT WAS DECIDED TO CHANGE TO METHODOLOGY:
 --FIRST EVER GIFT (REGARDLESS OF PROGRAM) WILL BE CONSIDERED THE DONOR'S JOIN GIFT
